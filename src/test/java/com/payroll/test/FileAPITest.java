@@ -1,5 +1,6 @@
 package com.payroll.test;
 
+import com.employee.data.JavaFileWatchService;
 import org.junit.Assert;
 import org.junit.Test;
 import java.io.IOException;
@@ -54,5 +55,13 @@ public class FileAPITest {
         Files.newDirectoryStream(playPath).forEach(System.out::println);
         Files.newDirectoryStream(playPath, path -> path.toFile().isFile() &
                 path.toString().startsWith("temp")).forEach(System.out::println);
+    }
+
+    @Test
+    public void givenADirectoryWhenWatchedListsAllTheActivities() throws IOException {
+        Path dir = Paths.get(pathDir+ "/"+folderName);
+        Files. list(dir).filter(Files::isRegularFile).forEach(System.out::println);
+        JavaFileWatchService watchService = new JavaFileWatchService(dir);
+        watchService.processEvents();
     }
 }
