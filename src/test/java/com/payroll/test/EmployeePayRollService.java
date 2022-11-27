@@ -1,12 +1,17 @@
 package com.payroll.test;
 
 import com.employee.data.EmployeePayRollData;
+import com.employee.data.EmployeePayRollFILEIOService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static com.payroll.test.EmployeePayRollService.IOService.CONSOLE_IO;
+import static com.payroll.test.EmployeePayRollService.IOService.FILE_IO;
+
 public class EmployeePayRollService {
+    public enum IOService {CONSOLE_IO, FILE_IO, DB_IO, REST_IO}
 
     private List<EmployeePayRollData> employeePayRollDataList;
 
@@ -19,7 +24,7 @@ public class EmployeePayRollService {
         EmployeePayRollService employeePayRollService = new EmployeePayRollService(employeePayRollList);
         Scanner consoleInputReader = new Scanner(System.in);
         employeePayRollService.readEmployeePayRollData(consoleInputReader);
-        employeePayRollService.writeEmployeePayRollData();
+        employeePayRollService.writeEmployeePayRollData(CONSOLE_IO);
     }
 
     public void readEmployeePayRollData(Scanner consoleInputReader) {
@@ -32,7 +37,21 @@ public class EmployeePayRollService {
         employeePayRollDataList.add(new EmployeePayRollData(empName,empID,empSalary));
     }
 
-    public void writeEmployeePayRollData() {
-        System.out.println("\nWriting Employee Payroll Reader to Console\n"+employeePayRollDataList);
+    public void writeEmployeePayRollData(IOService ioService) {
+        if (ioService.equals(CONSOLE_IO))
+            System.out.println("\nWriting Employee Payroll Reader to Console\n"+employeePayRollDataList);
+        else if (ioService.equals(FILE_IO))
+            new EmployeePayRollFILEIOService().writeData(employeePayRollDataList);
+    }
+
+    public void printData(IOService ioService) {
+        if (ioService.equals(FILE_IO))
+            new EmployeePayRollFILEIOService().printData();
+    }
+
+    public long countEntries(IOService ioService) {
+        if (ioService.equals(FILE_IO))
+            return new EmployeePayRollFILEIOService().countEntries();
+        return 0;
     }
 }
