@@ -2,7 +2,6 @@ package com.payroll.test;
 
 import com.employee.data.EmployeePayRollData;
 import com.employee.data.EmployeePayRollFILEIOService;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,6 +14,9 @@ public class EmployeePayRollService {
 
     private List<EmployeePayRollData> employeePayRollDataList;
 
+    public EmployeePayRollService() {
+    }
+
     public EmployeePayRollService(List<EmployeePayRollData> employeePayRollDataList) {
         this.employeePayRollDataList = employeePayRollDataList;
     }
@@ -22,19 +24,28 @@ public class EmployeePayRollService {
     public static void main(String[] args) {
         ArrayList<EmployeePayRollData> employeePayRollList = new ArrayList<>();
         EmployeePayRollService employeePayRollService = new EmployeePayRollService(employeePayRollList);
-        Scanner consoleInputReader = new Scanner(System.in);
-        employeePayRollService.readEmployeePayRollData(consoleInputReader);
+        employeePayRollService.readEmployeePayRollData(CONSOLE_IO);
         employeePayRollService.writeEmployeePayRollData(CONSOLE_IO);
     }
 
-    public void readEmployeePayRollData(Scanner consoleInputReader) {
-        System.out.println("Enter the name of the Employee");
-        String empName = consoleInputReader.next();
-        System.out.println("Enter the ID of the Employee");
-        int empID = consoleInputReader.nextInt();
-        System.out.println("Enter the Salary of the Employee");
-        double empSalary = consoleInputReader.nextDouble();
-        employeePayRollDataList.add(new EmployeePayRollData(empName,empID,empSalary));
+    public long readEmployeePayRollData(IOService ioService) {
+        if (ioService.equals(CONSOLE_IO))
+        {
+            Scanner consoleInputReader = new Scanner(System.in);
+            System.out.println("Enter the name of the Employee");
+            String empName = consoleInputReader.next();
+            System.out.println("Enter the ID of the Employee");
+            int empID = consoleInputReader.nextInt();
+            System.out.println("Enter the Salary of the Employee");
+            double empSalary = consoleInputReader.nextDouble();
+            employeePayRollDataList.add(new EmployeePayRollData(empName, empID, empSalary));
+            return employeePayRollDataList.size();
+        }
+        else if (ioService.equals(FILE_IO)) {
+            this.employeePayRollDataList = new EmployeePayRollFILEIOService().readData();
+            return employeePayRollDataList.size();
+        }
+        return employeePayRollDataList.size();
     }
 
     public void writeEmployeePayRollData(IOService ioService) {

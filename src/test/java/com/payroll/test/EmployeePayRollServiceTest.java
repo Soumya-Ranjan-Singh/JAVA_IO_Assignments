@@ -2,7 +2,6 @@ package com.payroll.test;
 
 import com.employee.data.EmployeePayRollData;
 import org.junit.Test;
-
 import java.util.Arrays;
 
 import static com.payroll.test.EmployeePayRollService.IOService.FILE_IO;
@@ -21,6 +20,13 @@ public class EmployeePayRollServiceTest {
         employeePayRollService.writeEmployeePayRollData(FILE_IO);
         employeePayRollService.printData(FILE_IO);
         long entries = employeePayRollService.countEntries(FILE_IO);
+        assertEquals(3 , entries);
+    }
+
+    @Test
+    public void givenFileOnReadingFromFileShouldMatchEmployeeCount() {
+        EmployeePayRollService employeePayRollService = new EmployeePayRollService();
+        long entries = employeePayRollService.readEmployeePayRollData(FILE_IO);
         assertEquals(3 , entries);
     }
 }

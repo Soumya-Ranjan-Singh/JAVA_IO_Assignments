@@ -1,10 +1,12 @@
 package com.employee.data;
 
-public class EmployeePayRollData {
+import java.io.Serializable;
 
-    private String name;
-    private int id;
-    private double salary;
+public class EmployeePayRollData implements Serializable {
+
+    private final String name;
+    private final int id;
+    private final double salary;
 
     public EmployeePayRollData(String name, int id, double salary) {
         this.name = name;
@@ -14,7 +16,7 @@ public class EmployeePayRollData {
 
     @Override
     public String toString() {
-        return "EmployeePayRollData{" +
+        return "EmployeePayrollData{" +
                 "name='" + name + '\'' +
                 ", id=" + id +
                 ", salary=" + salary +

@@ -9,13 +9,13 @@ import java.util.Map;
 import static java.nio.file.StandardWatchEventKinds.*;
 
 public class JavaFileWatchService {
-    private WatchService watcher;
-    private Map<WatchKey, Path> dirWatchers;
+    private final WatchService watcher;
+    private final Map<WatchKey, Path> dirWatchers;
 
     /* Creates a WatchService and registers the given directory */
     public JavaFileWatchService(Path dir) throws IOException {
         this.watcher = FileSystems.getDefault().newWatchService();
-        this.dirWatchers = new HashMap<WatchKey, Path>();
+        this.dirWatchers = new HashMap<>();
         scanAndRegisterDirectories(dir);
     }
 
@@ -30,7 +30,7 @@ public class JavaFileWatchService {
     /* Register the given directory, and all its subdirectories, with the WatchService. */
     private void scanAndRegisterDirectories(final Path start) throws IOException {
         //register directory and subdirectories
-        Files.walkFileTree(start, new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(start, new SimpleFileVisitor<>() {
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attr) throws IOException
             {
                 registerDirWatchers(dir);
@@ -51,12 +51,13 @@ public class JavaFileWatchService {
             if (dir == null)
                 continue;
             for (WatchEvent<?> event : key.pollEvents()) {
-                WatchEvent.Kind kind = event.kind();
+                WatchEvent.Kind<?> kind = event.kind();
+                //noinspection unchecked
                 Path name = ((WatchEvent<Path>) event).context();
                 Path child = dir.resolve(name);
                 System.out.format("%s: %s\n", event.kind().name(), child); // print out event
 
-                // if directory is created, then register it and its sub-directories
+                // if directory is created, then register it and its subdirectories
                 if (kind == ENTRY_CREATE) {
                     try {
                         if (Files.isDirectory(child))

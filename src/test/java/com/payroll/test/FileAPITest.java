@@ -14,11 +14,10 @@ import org.apache.commons.io.FileUtils;
 import static org.junit.Assert.assertTrue;
 
 public class FileAPITest {
-    private static Object path;
-    private static String pathDir = "E:\\BridgeLabz";
+    private static final String pathDir = "E:\\BridgeLabz";
     //pathDir = System.getProperty("user.home"); --> It only works when used to return the system property
     // denoted by the specified key passed as its argument.
-    private static String folderName = "FilesAPI_Works";
+    private static final String folderName = "FilesAPI_Works";
 
     @Test
     public void givenPathWhenCheckedThenConfirm() throws IOException {
@@ -45,12 +44,13 @@ public class FileAPITest {
             try {
                 Files.createFile(tempFile);
             }
-            catch (IOException e) {
+            catch (IOException ignored) {
             }
             assertTrue(Files.exists(tempFile));
         });
 
         // List Files, Directories as well as Files with Extension
+        //noinspection resource
         Files.list(playPath).filter(Files::isRegularFile).forEach(System.out::println);
         Files.newDirectoryStream(playPath).forEach(System.out::println);
         Files.newDirectoryStream(playPath, path -> path.toFile().isFile() &
@@ -60,6 +60,7 @@ public class FileAPITest {
     @Test
     public void givenADirectoryWhenWatchedListsAllTheActivities() throws IOException {
         Path dir = Paths.get(pathDir+ "/"+folderName);
+        //noinspection resource
         Files. list(dir).filter(Files::isRegularFile).forEach(System.out::println);
         JavaFileWatchService watchService = new JavaFileWatchService(dir);
         watchService.processEvents();
