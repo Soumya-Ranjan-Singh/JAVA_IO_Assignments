@@ -15,10 +15,13 @@ public class EmployeePayRollService {
 
     private List<EmployeePayRollData> employeePayRollDataList;
 
+    public EmployeePayRollDBIOService employeePayRollDBIOService;
     public EmployeePayRollService() {
+        employeePayRollDBIOService = EmployeePayRollDBIOService.getInstance();
     }
 
     public EmployeePayRollService(List<EmployeePayRollData> employeePayRollDataList) {
+        this();
         this.employeePayRollDataList = employeePayRollDataList;
     }
 
@@ -48,7 +51,7 @@ public class EmployeePayRollService {
         }
         else if (ioService.equals(DB_IO))
         {
-            this.employeePayRollDataList = new EmployeePayRollDBIOService().readData();
+            this.employeePayRollDataList = employeePayRollDBIOService.readData();
             return employeePayRollDataList;
         }
         return employeePayRollDataList;
@@ -73,7 +76,7 @@ public class EmployeePayRollService {
     }
 
     public void updateData(String name, double data, String columnName) {
-        int result = new EmployeePayRollDBIOService().updateEmployeeData(name,data,columnName);
+        int result = employeePayRollDBIOService.updateEmployeeData(name,data,columnName);
         if (result == 0) return;
         EmployeePayRollData employeePayRollData = this.getEmployeePayrollData(name);
         if (columnName.equals("salary")) {
@@ -94,7 +97,7 @@ public class EmployeePayRollService {
     }
 
     public boolean checkEmployeePayrollInSyncWithDB(String name) {
-        List<EmployeePayRollData> employeePayRollDataList = new EmployeePayRollDBIOService().getEmployeePayrollData(name);
+        List<EmployeePayRollData> employeePayRollDataList = employeePayRollDBIOService.getEmployeePayrollData(name);
         return employeePayRollDataList.get(0).equals(getEmployeePayrollData(name));
     }
 

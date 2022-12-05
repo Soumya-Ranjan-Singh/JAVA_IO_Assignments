@@ -6,6 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeePayRollDBIOService {
+
+    private  PreparedStatement employeePayrollDataStatement;
+
+    private static EmployeePayRollDBIOService employeePayRollDBIOService;
+
+    private EmployeePayRollDBIOService() {
+    }
+
+    public static EmployeePayRollDBIOService getInstance() {
+        if (employeePayRollDBIOService == null)
+            employeePayRollDBIOService = new EmployeePayRollDBIOService();
+        return employeePayRollDBIOService;
+    }
     private Connection getConnection() throws SQLException {
         String jdbcURL = "jdbc:mysql://localhost:3306/payroll_service";
         String userName = "root";
@@ -15,19 +28,6 @@ public class EmployeePayRollDBIOService {
         con = DriverManager.getConnection(jdbcURL,userName,password);
         System.out.println("Connection is successful!!"+con);
         return con;
-    }
-
-    public List<EmployeePayRollData> readData() {
-        List<EmployeePayRollData> employeePayRollDataList = new ArrayList<>();
-        String sqlQuery = "select * from employee_payroll";
-        try(Connection connection = this.getConnection()) {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sqlQuery);
-            employeePayRollDataList = this.getEmployeePayrollData(resultSet);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return employeePayRollDataList;
     }
 
     private List<EmployeePayRollData> getEmployeePayrollData(ResultSet resultSet) {
@@ -46,8 +46,27 @@ public class EmployeePayRollDBIOService {
         return employeePayRollDataList;
     }
 
-    public int updateEmployeeData(String name, double data, String columnName) {
-        return this.updateEmployeeDataUsingStatement(name , data , columnName);
+    private void prepareStatementForEmployeeData() {
+        try {
+            Connection connection = this.getConnection();
+            String sqlQuery = "select * from employee_payroll where name = ?";
+            employeePayrollDataStatement = connection.prepareStatement(sqlQuery);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<EmployeePayRollData> readData() {
+        List<EmployeePayRollData> employeePayRollDataList = new ArrayList<>();
+        String sqlQuery = "select * from employee_payroll";
+        try(Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            employeePayRollDataList = this.getEmployeePayrollData(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employeePayRollDataList;
     }
 
     private int updateEmployeeDataUsingStatement(String name, double data, String columnName) {
@@ -61,16 +80,23 @@ public class EmployeePayRollDBIOService {
         return 0;
     }
 
+    public int updateEmployeeData(String name, double data, String columnName) {
+        return this.updateEmployeeDataUsingStatement(name , data , columnName);
+    }
+
     public List<EmployeePayRollData> getEmployeePayrollData(String name) {
         List<EmployeePayRollData> employeePayRollList = null;
-        String sqlQuery = String.format("select * from employee_payroll where name = '%s';",name);
-        try(Connection connection = this.getConnection()) {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(sqlQuery);
+        if (this.employeePayrollDataStatement == null)
+            this.prepareStatementForEmployeeData();
+        try {
+            employeePayrollDataStatement.setString(1 , name);
+            ResultSet resultSet = employeePayrollDataStatement.executeQuery();
             employeePayRollList = this.getEmployeePayrollData(resultSet);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return employeePayRollList;
     }
+
+
 }
