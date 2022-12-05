@@ -72,12 +72,18 @@ public class EmployeePayRollService {
         return 0;
     }
 
-    public void updateData(String name, double salary) {
-        int result = new EmployeePayRollDBIOService().updateEmployeeData(name,salary);
+    public void updateData(String name, double data, String columnName) {
+        int result = new EmployeePayRollDBIOService().updateEmployeeData(name,data,columnName);
         if (result == 0) return;
         EmployeePayRollData employeePayRollData = this.getEmployeePayrollData(name);
-        if (employeePayRollData != null)
-            employeePayRollData.salary = salary;
+        if (columnName.equals("salary")) {
+            if (employeePayRollData != null)
+                employeePayRollData.salary = data;
+        }
+        else if (columnName.equals("basicpay")) {
+            if (employeePayRollData != null)
+                employeePayRollData.name = name;
+        }
     }
 
     private EmployeePayRollData getEmployeePayrollData(String name) {

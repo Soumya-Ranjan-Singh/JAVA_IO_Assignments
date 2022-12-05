@@ -5,7 +5,7 @@ import java.time.LocalDate;
 
 public class EmployeePayRollData implements Serializable {
 
-    public final String name;
+    public String name;
     private final int id;
     public double salary;
     public LocalDate startDate;

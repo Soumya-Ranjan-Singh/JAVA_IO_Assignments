@@ -46,12 +46,12 @@ public class EmployeePayRollDBIOService {
         return employeePayRollDataList;
     }
 
-    public int updateEmployeeData(String name, double data) {
-        return this.updateEmployeeDataUsingStatement(name , data);
+    public int updateEmployeeData(String name, double data, String columnName) {
+        return this.updateEmployeeDataUsingStatement(name , data , columnName);
     }
 
-    private int updateEmployeeDataUsingStatement(String name, double data) {
-        String sqlQuery = String.format("update employee_payroll set salary = %.2f where name = '%s';",data,name);
+    private int updateEmployeeDataUsingStatement(String name, double data, String columnName) {
+        String sqlQuery = String.format("update employee_payroll set %s = %.2f where name = '%s';",columnName,data,name);
         try (Connection connection = this.getConnection()) {
             Statement statement = connection.createStatement();
             return statement.executeUpdate(sqlQuery);
