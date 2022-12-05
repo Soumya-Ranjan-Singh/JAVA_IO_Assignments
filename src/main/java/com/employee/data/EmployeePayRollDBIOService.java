@@ -98,5 +98,16 @@ public class EmployeePayRollDBIOService {
         return employeePayRollList;
     }
 
-
+    public List<EmployeePayRollData> retrieveEmployeeData(LocalDate fromDate, LocalDate toDate) {
+        String sqlQuery = "select * from Employee_Payroll where start between cast('"+fromDate+"' as DATE) and DATE('"+toDate+"')";
+        List<EmployeePayRollData> employeePayRollDataList = new ArrayList<>();
+        try(Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            employeePayRollDataList = this.getEmployeePayrollData(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employeePayRollDataList;
+    }
 }

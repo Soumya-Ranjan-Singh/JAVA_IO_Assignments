@@ -3,6 +3,8 @@ package com.payroll.test;
 import com.employee.data.EmployeePayRollDBIOService;
 import com.employee.data.EmployeePayRollData;
 import com.employee.data.EmployeePayRollFILEIOService;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -101,4 +103,7 @@ public class EmployeePayRollService {
         return employeePayRollDataList.get(0).equals(getEmployeePayrollData(name));
     }
 
+    public List<EmployeePayRollData> retrieveDateRange(LocalDate fromDate, LocalDate toDate) {
+        return employeePayRollDBIOService.retrieveEmployeeData(fromDate,toDate);
+    }
 }

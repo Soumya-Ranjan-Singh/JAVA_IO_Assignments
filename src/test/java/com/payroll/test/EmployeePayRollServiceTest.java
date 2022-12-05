@@ -2,6 +2,8 @@ package com.payroll.test;
 
 import com.employee.data.EmployeePayRollData;
 import org.junit.Test;
+
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,5 +58,12 @@ public class EmployeePayRollServiceTest {
         employeePayRollService.updateData("Terisa" , 3000000.00,"basicpay");
         boolean result = employeePayRollService.checkEmployeePayrollInSyncWithDB("Terisa");
         assertTrue(result);
+    }
+
+    @Test
+    public void givenEmployeePayrollInDB_WhenRetrievedByAParticularDateRange_ShouldMatchTheRecord() {
+        EmployeePayRollService employeePayRollService = new EmployeePayRollService();
+        List<EmployeePayRollData> list = employeePayRollService.retrieveDateRange(LocalDate.parse("2018-01-01") , LocalDate.parse("2021-12-01"));
+        assertEquals(3 , list.size());
     }
 }
