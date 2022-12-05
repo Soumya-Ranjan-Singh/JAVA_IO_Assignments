@@ -110,4 +110,25 @@ public class EmployeePayRollDBIOService {
         }
         return employeePayRollDataList;
     }
+
+    public List<?> getData(String operations) {
+        String sqlQuery;
+        if (operations.equals("COUNT"))
+            sqlQuery = String.format("select %s(id) from employee_payroll GROUP BY gender;",operations);
+        else
+            sqlQuery = String.format("select %s(salary) from employee_payroll GROUP BY gender;",operations);
+        List<Double> dataList = new ArrayList<>();
+        try(Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            while (resultSet.next())
+            {
+                double data = resultSet.getDouble(1);
+                dataList.add(data);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dataList;
+    }
 }

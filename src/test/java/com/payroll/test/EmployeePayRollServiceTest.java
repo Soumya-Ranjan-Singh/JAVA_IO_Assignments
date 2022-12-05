@@ -66,4 +66,53 @@ public class EmployeePayRollServiceTest {
         List<EmployeePayRollData> list = employeePayRollService.retrieveDateRange(LocalDate.parse("2018-01-01") , LocalDate.parse("2021-12-01"));
         assertEquals(3 , list.size());
     }
+    @Test
+    public void givenEmployeePayrollInDB_WhenDoingSumOfSalaryAnalysis_ShouldMatchTheRecord() {
+        EmployeePayRollService employeePayRollService = new EmployeePayRollService();
+        //noinspection rawtypes
+        List list = employeePayRollService.retrieveData("SUM");
+        assertEquals(2 , list.size());
+        assertEquals(58000, (Double) list.get(0), 0.0);
+        assertEquals(6032000, (Double) list.get(1), 0.0);
+    }
+
+    @Test
+    public void givenEmployeePayrollInDB_WhenDoingAvgOfSalaryAnalysis_ShouldMatchTheRecord() {
+        EmployeePayRollService employeePayRollService = new EmployeePayRollService();
+        //noinspection rawtypes
+        List list = employeePayRollService.retrieveData("AVG");
+        assertEquals(2 , list.size());
+        assertEquals(29000, (Double) list.get(0), 0.0);
+        assertEquals(2010666.6666666667, (Double) list.get(1),0.0);
+    }
+
+    @Test
+    public void givenEmployeePayrollInDB_WhenDoingMinOfSalaryAnalysis_ShouldMatchTheRecord() {
+        EmployeePayRollService employeePayRollService = new EmployeePayRollService();
+        //noinspection rawtypes
+        List list = employeePayRollService.retrieveData("MIN");
+        assertEquals(2 , list.size());
+        assertEquals(28000, (Double) list.get(0), 0.0);
+        assertEquals(32000, (Double) list.get(1),0.0);
+    }
+
+    @Test
+    public void givenEmployeePayrollInDB_WhenDoingMaxOfSalaryAnalysis_ShouldMatchTheRecord() {
+        EmployeePayRollService employeePayRollService = new EmployeePayRollService();
+        //noinspection rawtypes
+        List list = employeePayRollService.retrieveData("MAX");
+        assertEquals(2 , list.size());
+        assertEquals(30000, (Double) list.get(0), 0.0);
+        assertEquals(3000000, (Double) list.get(1),0.0);
+    }
+
+    @Test
+    public void givenEmployeePayrollInDB_WhenDoingCountOfPersonsAnalysis_ShouldMatchTheRecord() {
+        EmployeePayRollService employeePayRollService = new EmployeePayRollService();
+        //noinspection rawtypes
+        List list = employeePayRollService.retrieveData("COUNT");
+        assertEquals(2 , list.size());
+        assertEquals(2, (Double) list.get(0), 0.0);
+        assertEquals(3, (Double) list.get(1),0.0);
+    }
 }

@@ -106,4 +106,9 @@ public class EmployeePayRollService {
     public List<EmployeePayRollData> retrieveDateRange(LocalDate fromDate, LocalDate toDate) {
         return employeePayRollDBIOService.retrieveEmployeeData(fromDate,toDate);
     }
+
+    @SuppressWarnings("rawtypes")
+    public List retrieveData(String operations) {
+        return employeePayRollDBIOService.getData(operations);
+    }
 }
