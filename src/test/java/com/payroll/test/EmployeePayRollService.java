@@ -10,6 +10,7 @@ import java.util.Scanner;
 import static com.payroll.test.EmployeePayRollService.IOService.*;
 
 public class EmployeePayRollService {
+
     public enum IOService {CONSOLE_IO, FILE_IO, DB_IO, REST_IO}
 
     private List<EmployeePayRollData> employeePayRollDataList;
@@ -70,4 +71,25 @@ public class EmployeePayRollService {
             return new EmployeePayRollFILEIOService().countEntries();
         return 0;
     }
+
+    public void updateData(String name, double salary) {
+        int result = new EmployeePayRollDBIOService().updateEmployeeData(name,salary);
+        if (result == 0) return;
+        EmployeePayRollData employeePayRollData = this.getEmployeePayrollData(name);
+        if (employeePayRollData != null)
+            employeePayRollData.salary = salary;
+    }
+
+    private EmployeePayRollData getEmployeePayrollData(String name) {
+        return  this.employeePayRollDataList.stream()
+                .filter(employeePayRollDataItem -> employeePayRollDataItem.name.equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public boolean checkEmployeePayrollInSyncWithDB(String name) {
+        List<EmployeePayRollData> employeePayRollDataList = new EmployeePayRollDBIOService().getEmployeePayrollData(name);
+        return employeePayRollDataList.get(0).equals(getEmployeePayrollData(name));
+    }
+
 }

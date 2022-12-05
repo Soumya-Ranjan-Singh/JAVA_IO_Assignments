@@ -8,6 +8,7 @@ import java.util.List;
 import static com.payroll.test.EmployeePayRollService.IOService.DB_IO;
 import static com.payroll.test.EmployeePayRollService.IOService.FILE_IO;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EmployeePayRollServiceTest {
 
@@ -37,5 +38,14 @@ public class EmployeePayRollServiceTest {
         EmployeePayRollService employeePayRollService = new EmployeePayRollService();
         List<EmployeePayRollData> employeePayRollList = employeePayRollService.readEmployeePayRollData(DB_IO);
         assertEquals(5 , employeePayRollList.size());
+    }
+
+    @Test
+    public void givenNewSalaryForEmployee_WhenUpdatedShouldSyncWithDB() {
+        EmployeePayRollService employeePayRollService = new EmployeePayRollService();
+        List<EmployeePayRollData> employeePayRollList = employeePayRollService.readEmployeePayRollData(DB_IO);
+        employeePayRollService.updateData("Terisa", 3000000.00);
+        boolean result = employeePayRollService.checkEmployeePayrollInSyncWithDB("Terisa");
+        assertTrue(result);
     }
 }

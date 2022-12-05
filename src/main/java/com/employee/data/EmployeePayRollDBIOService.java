@@ -45,4 +45,32 @@ public class EmployeePayRollDBIOService {
         }
         return employeePayRollDataList;
     }
+
+    public int updateEmployeeData(String name, double data) {
+        return this.updateEmployeeDataUsingStatement(name , data);
+    }
+
+    private int updateEmployeeDataUsingStatement(String name, double data) {
+        String sqlQuery = String.format("update employee_payroll set salary = %.2f where name = '%s';",data,name);
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            return statement.executeUpdate(sqlQuery);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<EmployeePayRollData> getEmployeePayrollData(String name) {
+        List<EmployeePayRollData> employeePayRollList = null;
+        String sqlQuery = String.format("select * from employee_payroll where name = '%s';",name);
+        try(Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sqlQuery);
+            employeePayRollList = this.getEmployeePayrollData(resultSet);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employeePayRollList;
+    }
 }
