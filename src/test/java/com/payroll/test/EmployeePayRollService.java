@@ -1,13 +1,13 @@
 package com.payroll.test;
 
+import com.employee.data.EmployeePayRollDBIOService;
 import com.employee.data.EmployeePayRollData;
 import com.employee.data.EmployeePayRollFILEIOService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static com.payroll.test.EmployeePayRollService.IOService.CONSOLE_IO;
-import static com.payroll.test.EmployeePayRollService.IOService.FILE_IO;
+import static com.payroll.test.EmployeePayRollService.IOService.*;
 
 public class EmployeePayRollService {
     public enum IOService {CONSOLE_IO, FILE_IO, DB_IO, REST_IO}
@@ -28,7 +28,7 @@ public class EmployeePayRollService {
         employeePayRollService.writeEmployeePayRollData(CONSOLE_IO);
     }
 
-    public long readEmployeePayRollData(IOService ioService) {
+    public List<EmployeePayRollData> readEmployeePayRollData(IOService ioService) {
         if (ioService.equals(CONSOLE_IO))
         {
             Scanner consoleInputReader = new Scanner(System.in);
@@ -39,13 +39,18 @@ public class EmployeePayRollService {
             System.out.println("Enter the Salary of the Employee");
             double empSalary = consoleInputReader.nextDouble();
             employeePayRollDataList.add(new EmployeePayRollData(empName, empID, empSalary));
-            return employeePayRollDataList.size();
+            return employeePayRollDataList;
         }
         else if (ioService.equals(FILE_IO)) {
             this.employeePayRollDataList = new EmployeePayRollFILEIOService().readData();
-            return employeePayRollDataList.size();
+            return employeePayRollDataList;
         }
-        return employeePayRollDataList.size();
+        else if (ioService.equals(DB_IO))
+        {
+            this.employeePayRollDataList = new EmployeePayRollDBIOService().readData();
+            return employeePayRollDataList;
+        }
+        return employeePayRollDataList;
     }
 
     public void writeEmployeePayRollData(IOService ioService) {

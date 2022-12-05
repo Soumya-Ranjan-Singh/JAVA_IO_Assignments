@@ -3,7 +3,9 @@ package com.payroll.test;
 import com.employee.data.EmployeePayRollData;
 import org.junit.Test;
 import java.util.Arrays;
+import java.util.List;
 
+import static com.payroll.test.EmployeePayRollService.IOService.DB_IO;
 import static com.payroll.test.EmployeePayRollService.IOService.FILE_IO;
 import static org.junit.Assert.assertEquals;
 
@@ -26,7 +28,14 @@ public class EmployeePayRollServiceTest {
     @Test
     public void givenFileOnReadingFromFileShouldMatchEmployeeCount() {
         EmployeePayRollService employeePayRollService = new EmployeePayRollService();
-        long entries = employeePayRollService.readEmployeePayRollData(FILE_IO);
-        assertEquals(3 , entries);
+        List<EmployeePayRollData> employeePayRollList = employeePayRollService.readEmployeePayRollData(FILE_IO);
+        assertEquals(3 , employeePayRollList.size());
+    }
+
+    @Test
+    public void givenEmployeePayrollInDB_WhenRetrieved_ShouldMatchEmployeeCount() {
+        EmployeePayRollService employeePayRollService = new EmployeePayRollService();
+        List<EmployeePayRollData> employeePayRollList = employeePayRollService.readEmployeePayRollData(DB_IO);
+        assertEquals(5 , employeePayRollList.size());
     }
 }
