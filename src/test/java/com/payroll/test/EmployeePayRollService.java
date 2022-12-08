@@ -7,6 +7,7 @@ import com.employee.data.EmployeePayRollFILEIOService;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 import static com.payroll.test.EmployeePayRollService.IOService.*;
@@ -105,5 +106,36 @@ public class EmployeePayRollService {
 
     public List<EmployeePayRollData> retrieveDateRange(LocalDate fromDate, LocalDate toDate) {
         return employeePayRollDBIOService.retrieveEmployeeData(fromDate,toDate);
+    }
+
+    public List<EmployeePayRollData> readEmployeePayrollForDateRange(IOService ioService, LocalDate startDate, LocalDate endDate) {
+        if (ioService.equals(DB_IO))
+        {
+            return employeePayRollDBIOService.getEmployeePayrollForDateRange(startDate,endDate);
+        }
+        return null;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public List retrieveData(String operations) {
+        return employeePayRollDBIOService.getData(operations);
+    }
+
+    public Map<String, Double> readOperation_OnSalaryByGender(IOService ioService, String operation) {
+        if (ioService.equals(DB_IO))
+            return employeePayRollDBIOService.getOperationOnSalaryByGender(operation);
+        return null;
+    }
+
+    public Map<String, Integer> readCountOfPersonsByGender(IOService ioService) {
+        if (ioService.equals(DB_IO))
+            return employeePayRollDBIOService.getCountOfPersonsByGender();
+        return null;
+    }
+
+    public void addEmployeeToPayroll(String name, String phoneNumber, String address, String department,
+                                     String gender, int salary, int basicPay, int deduction, int taxablePay, int incomeTax, int netPay, LocalDate startDate) {
+        employeePayRollDataList.add(employeePayRollDBIOService.addEmployeeToPayroll(name,phoneNumber,address,department,gender,salary,basicPay
+                ,deduction,taxablePay,incomeTax,netPay,startDate));
     }
 }
