@@ -170,7 +170,6 @@ public class EmployeePayRollDBIOService {
             e.printStackTrace();
         }
         return genderToPersonCountMap;
-
     }
 
     public EmployeePayRollData addEmployeeToPayrollUC7(String name, String phoneNumber, String address, String department, String gender, int salary,
@@ -208,12 +207,15 @@ public class EmployeePayRollDBIOService {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        try (Statement statement = connection.createStatement()) {
+        try (Statement statement = connection != null ? connection.createStatement() : null) {
             String sqlQuery = String.format("insert into employee_payroll " +
                             "(name, phonenumber, address, department, gender, salary, basicpay, deduction, taxablepay, incometax, netpay, start) " +
                             "VALUES ( '%s', '%s', '%s', '%s', '%s','%s', '%s', '%s', '%s', '%s', '%s', '%s' )", name, phoneNumber, address, department, gender,
                     salary, basicPay, deduction, taxablePay, incomeTax, netPay, startDate);
-            int rowAffected = statement.executeUpdate(sqlQuery, statement.RETURN_GENERATED_KEYS);
+            int rowAffected = 0;
+            if (statement != null) {
+                rowAffected = statement.executeUpdate(sqlQuery, statement.RETURN_GENERATED_KEYS);
+            }
             if (rowAffected == 1) {
                 ResultSet result = statement.getGeneratedKeys();
                 if (result.next())
@@ -222,34 +224,40 @@ public class EmployeePayRollDBIOService {
         } catch (SQLException e) {
             e.printStackTrace();
             try {
-                connection.rollback();
+                if (connection != null) {
+                    connection.rollback();
+                }
                 return employeePayRollData;
             } catch (SQLException ex) {
                 e.printStackTrace();
             }
         }
-        try (Statement statement = connection.createStatement()) {
-            double deductions = salary * 0.2;
-            double taxablepay = salary - deductions;
-            double tax = taxablepay * 0.1;
-            double netpay = salary - tax;
-            String sql = String.format("insert into payroll_details " +
-                    "( employee_id, basic_pay, deductions, taxable_pay, tax, net_pay)" +
-                    "Values ( %s, %s, %s, %s, %s, %s )",employeeID,salary,deductions,taxablepay,tax,netpay);
-            int rowAffected = statement.executeUpdate(sql);
-            if (rowAffected == 1) {
-                employeePayRollData = new EmployeePayRollData(name,employeeID,salary,startDate);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            try {
-                connection.rollback();
-            } catch (SQLException ex) {
+        if (connection != null) {
+            try (Statement statement = connection.createStatement()) {
+                double deductions = salary * 0.2;
+                double taxablepay = salary - deductions;
+                double tax = taxablepay * 0.1;
+                double netpay = salary - tax;
+                String sql = String.format("insert into payroll_details " +
+                        "( employee_id, basic_pay, deductions, taxable_pay, tax, net_pay)" +
+                        "Values ( %s, %s, %s, %s, %s, %s )",employeeID,salary,deductions,taxablepay,tax,netpay);
+                int rowAffected = statement.executeUpdate(sql);
+                if (rowAffected == 1) {
+                    employeePayRollData = new EmployeePayRollData(name,employeeID,salary,startDate);
+                }
+            } catch (SQLException e) {
                 e.printStackTrace();
+                try {
+                    connection.rollback();
+                } catch (SQLException ex) {
+                    e.printStackTrace();
+                }
             }
         }
         try {
-            connection.commit();
+            if (connection != null) {
+                connection.commit();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -257,10 +265,11 @@ public class EmployeePayRollDBIOService {
                 try {
                     connection.close();
                 } catch (SQLException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
             }
         }
         return employeePayRollData;
     }
+
 }
