@@ -8,8 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.payroll.test.NewEmployeePayrollService.IOService.DB_IO;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class NewEmployeePayrollServiceTest {
     @Test
@@ -23,7 +22,7 @@ public class NewEmployeePayrollServiceTest {
     public void givenNewSalaryForEmployee_WhenUpdatedShouldSyncWithDB() {
         NewEmployeePayrollService newEmployeePayrollService = new NewEmployeePayrollService();
         newEmployeePayrollService.readEmployeeData(DB_IO);
-        newEmployeePayrollService.updateData("Terisa" , 300000.00,"salary");
+        newEmployeePayrollService.updateData("Terisa" , "300000.00","Salary");
         boolean result = newEmployeePayrollService.checkEmployeePayrollDetailsInSyncWithDB("Terisa");
         assertTrue(result);
     }
@@ -96,5 +95,11 @@ public class NewEmployeePayrollServiceTest {
         assertTrue(result);
     }
 
-
+    @Test
+    public void givenRemoveEmployee_WhenUpdatedShouldSyncWithDB() {
+        NewEmployeePayrollService newEmployeePayrollService = new NewEmployeePayrollService();
+        List<EmployeeData> employeeList = newEmployeePayrollService.readEmployeeData(DB_IO);
+        newEmployeePayrollService.removeData("Charlie" , false,"Is_Active");
+        assertEquals(3 , employeeList.size());
+    }
 }

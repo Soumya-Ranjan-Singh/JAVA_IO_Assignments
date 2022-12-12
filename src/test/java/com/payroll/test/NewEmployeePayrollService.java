@@ -32,12 +32,12 @@ public class NewEmployeePayrollService {
         return employeeDataList;
     }
 
-    public void updateData(String name, double data, String columnName) {
+    public void updateData(String name, String data, String columnName) {
         int result = newEmployeePayrollDBIOService.updateEmployeeData(name,data,columnName);
         if (result == 0) return;
         EmployeeData employeeData = this.getEmployeeData(name);
         if (employeeData != null)
-            employeeData.setSalary(data);
+            employeeData.setSalary(Double.parseDouble(data));
     }
 
     private EmployeeData getEmployeeData(String name) {
@@ -79,6 +79,14 @@ public class NewEmployeePayrollService {
         double netPay = salary - tax;
         employeeDataList.add(newEmployeePayrollDBIOService.addEmployeeToPayroll(name,gender,salary,phoneNo,startDate,
                 department,deductions,taxablePay,tax,netPay));
+    }
+
+    public void removeData(String name, boolean data, String columnName) {
+        int result = newEmployeePayrollDBIOService.removeEmployeeData(name,data,columnName);
+        if (result == 0) return;
+        EmployeeData employeeData = this.getEmployeeData(name);
+        if (employeeData != null)
+            employeeDataList.remove(employeeData);
     }
 
 }

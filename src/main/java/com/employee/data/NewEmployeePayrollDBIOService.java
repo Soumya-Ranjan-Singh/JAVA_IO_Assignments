@@ -88,12 +88,12 @@ public class NewEmployeePayrollDBIOService {
         }
     }
 
-    public int updateEmployeeData(String name, double data, String columnName) {
+    public int updateEmployeeData(String name, String data, String columnName) {
         return this.updateEmployeeDataUsingStatement(name , data , columnName);
     }
 
-    private int updateEmployeeDataUsingStatement(String name, double data, String columnName) {
-        String sqlQuery = String.format("update EmployeeDetails set %s = %.2f where name = '%s';",columnName,data,name);
+    private int updateEmployeeDataUsingStatement(String name, String data, String columnName) {
+        String sqlQuery = String.format("update EmployeeDetails set %s = %.2f where name = '%s';",columnName,Double.parseDouble(data),name);
         try (Connection connection = this.getConnection()) {
             Statement statement = connection.createStatement();
             return statement.executeUpdate(sqlQuery);
@@ -260,5 +260,20 @@ public class NewEmployeePayrollDBIOService {
             }
         }
         return employeeData;
+    }
+
+    public int removeEmployeeData(String name, boolean data, String columnName) {
+        return this.removeEmployeeDataUsingStatement(name , data , columnName);
+    }
+
+    private int removeEmployeeDataUsingStatement(String name, boolean data, String columnName) {
+        String sqlQuery = String.format("update EmployeeDetails set %s = %s where name = '%s';",columnName,data,name);
+        try (Connection connection = this.getConnection()) {
+            Statement statement = connection.createStatement();
+            return statement.executeUpdate(sqlQuery);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
